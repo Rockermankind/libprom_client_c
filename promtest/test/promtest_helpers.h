@@ -24,7 +24,7 @@
 #define PORT 8000
 #define ENDPOINT "http://0.0.0.0:8000/metrics"	// keep in sync with PORT
 
-struct MHD_Daemon *promtest_daemon;
+extern struct MHD_Daemon *promtest_daemon;
 
 typedef struct promtest_popen_buf {
 	char *buf;

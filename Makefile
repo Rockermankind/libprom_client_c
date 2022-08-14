@@ -32,7 +32,7 @@ distclean: clean cleandocs
 
 prom:
 	-mkdir prom/build$(TESTDIR) && cd prom/build$(TESTDIR) && \
-	TEST=$(TEST) cmake -v -G "Unix Makefiles" $(CMAKE_EXTRA_OPTS) ..
+	TEST=$(TEST) cmake -G "Unix Makefiles" $(CMAKE_EXTRA_OPTS) ..
 	cd prom/build$(TESTDIR) && $(MAKE) $(MAKE_FLAGS)
 
 # Run "ctest --verbose --force-new-ctest-process" to get the details
@@ -61,7 +61,7 @@ docs: cleandocs
 smoke: build
 	promtest/prom2json.sh
 	-mkdir promtest/build && cd promtest/build && \
-	cmake -v -G "Unix Makefiles" $(CMAKE_EXTRA_OPTS) ..
+	cmake -G "Unix Makefiles" $(CMAKE_EXTRA_OPTS) ..
 	cd promtest/build && $(MAKE) $(MAKE_FLAGS)
 	@echo "Test takes ~ 1 min ..."
 	PATH=$${PWD}/bin:$${PATH} \

@@ -32,7 +32,11 @@ promhttp_set_active_collector_registry(pcr_t *registry) {
 		PROM_WARN("No registry set to answer http requests", "");
 }
 
-int
+#if MHD_VERSION >= 0x00097500
+	enum MHD_Result
+#else
+	int
+#endif
 promhttp_handler(void *cls, struct MHD_Connection *connection, const char *url,
 	const char *method, const char *version, const char *upload_data,
 	size_t *upload_data_size, void **con_cls)
@@ -42,7 +46,11 @@ promhttp_handler(void *cls, struct MHD_Connection *connection, const char *url,
 	enum MHD_ResponseMemoryMode mode = MHD_RESPMEM_PERSISTENT;
 	unsigned int status = MHD_HTTP_BAD_REQUEST;
 
+#if MHD_VERSION >= 0x00097500
+	enum MHD_Result	ret;
+#else
 	int ret;
+#endif
 
 	if (strcmp(method, "GET") != 0) {
 		body = "Invalid HTTP Method\n";

@@ -24,6 +24,7 @@
 #include "promtest_helpers.h"
 #include "unity.h"
 
+struct MHD_Daemon *promtest_daemon;
 pthread_mutex_t smoke_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void
