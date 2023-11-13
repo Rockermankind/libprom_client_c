@@ -10,7 +10,7 @@ DEPS = foo.h bar.h
 OBJ = foo.o bar.o main.o
 
 example: ${OBJ} ${LIBS}
-	gcc -g -o $@ ${CFLAGS} -O1 -pthread ${OBJ} $(LDFLAGS) -lprom -lpromhttp -lmicrohttpd
+	gcc -g -o $@ ${CFLAGS} -O1 -pthread ${OBJ} $(LDFLAGS) -lprom -lpromhttp
 
 %.o: %.c ${DEPS}
 	${GCC} ${CFLAGS} -c $< -o $@

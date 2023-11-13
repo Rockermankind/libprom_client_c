@@ -126,7 +126,7 @@ main(int argc, const char **argv) {
 	void intHandler(int signal) {
 		PROM_LOG("\nshutting down...");
 		pcr_destroy(PROM_COLLECTOR_REGISTRY);
-		MHD_stop_daemon(daemon);
+		promhttp_stop_daemon(daemon);
 		done = 1;
 	}
 

@@ -83,3 +83,7 @@ promhttp_start_daemon(unsigned int flags, unsigned short port,
 {
 	return MHD_start_daemon(flags, port, apc, apc_cls, &promhttp_handler, NULL, MHD_OPTION_END);
 }
+
+void promhttp_stop_daemon(struct MHD_Daemon *daemon) {
+	MHD_stop_daemon(daemon);
+}

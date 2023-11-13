@@ -17,3 +17,5 @@ vendor/parson/testcpp
 *tar.gz
 *vgcore*
 *.o
+docs
+prom/test/Testing
