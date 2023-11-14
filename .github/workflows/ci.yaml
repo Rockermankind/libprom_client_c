@@ -1,67 +1,140 @@
 name: CI
-# This workflow is triggered on pushes to the repository.
+
+env:
+  GHAH: etc/gha-helper.sh
+  MISSING_BUILD_PKGS: 'ksh libmicrohttpd-dev'
+  MISSING_DOC_PKGS: 'doxygen graphviz'
+  PROTO: '/var/tmp/proto'
+
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - main
+  pull_request:
+    paths-ignore:
+      - '.github/**'
+      - '.gitignore'
+      - 'example/**'
+      - 'promtest/**'
+      - 'vendor/**'
+  workflow_dispatch:
+
+concurrency:
+  group: pr-build-and-deploy-${{ github.head_ref }}
+  cancel-in-progress: true
 
 jobs:
-  ubuntu-20-04:
-    name: ubuntu-20-04
-    runs-on: ubuntu-latest
+  job_1a:
+    name: Build
+    runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - name: test
+      - name: Environment
         env:
-          DOCKER_IMAGE: ubuntu:20.04
-          CI: 1
-        run: make
-  ubuntu-18-04:
-    name: ubuntu-18-04
-    runs-on: ubuntu-latest
+          GITHUB_CTX: ${{ toJSON(github) }}
+          MY_ENV: ${{ toJSON(env) }}
+          RUNNER_CTX: ${{ toJSON(runner) }}
+        run: |
+          lsb_release -a
+          printf "github:\n$GITHUB_CTX\n"
+          printf "env:\n$MY_ENV\n"
+          printf "env:\n$RUNNER_CTX\n"
+          df -h
+          mount
+          echo "DISTRO_NAME=$( lsb_release -is )" >>$GITHUB_ENV
+          echo "DISTRO_VERSION=$( lsb_release -rs )" >>$GITHUB_ENV
+          echo "GITHUB_SHA_SHORT=$( echo ${GITHUB_SHA:0:7} )" >>$GITHUB_ENV
+      - name: Install packages
+        run: |
+          echo 'man-db man-db/auto-update boolean false' | \
+              sudo debconf-set-selections
+          sudo rm -f /var/lib/man-db/auto-update
+          sudo apt-get update
+          # stupid debian shipped experimental and total broken ksh2020 as ksh
+          # package and the stable one as ksh93 in focal.
+          sudo apt-get install ksh93 || sudo apt-get install ksh
+          sudo apt-get install ${MISSING_BUILD_PKGS}
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        run: |
+          echo "APP_VERSION=$( cat VERSION )" >>$GITHUB_ENV
+          ${GHAH} -c showEnv
+          make
+      - name: Install
+        run: |
+          cd prom/build && DESTDIR=${PROTO} make install
+          cd ../../promhttp/build && DESTDIR=${PROTO} make install
+          cd ${PROTO} && printf "${GITHUB_SHA}\n" > libprom.commit && \
+              tar cplzf ${{ runner.temp }}/libprom.tar.gz \
+                  --xform="s|^.|libprom-${APP_VERSION}|" .
+      - name: Upload binary archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: libprom-${{ env.DISTRO_NAME }}_${{ env.DISTRO_VERSION }}-${{ env.APP_VERSION }}
+          path: ${{ runner.temp }}/libprom.tar.gz
+
+  job_2a:
+    name: Tests
+    runs-on: ubuntu-20.04
+    # This job needs to do a lot more work than just building the libs. So
+    # if building the libs fails, it does not make a lot of sense to try to run
+    # any tests. Therefore we skip it automatically by building the libs first,
+    # and thus save a lot of resources if the job fails.
+    needs: job_1a
     steps:
-      - uses: actions/checkout@v2
-      - name: test
-        env:
-          DOCKER_IMAGE: ubuntu:18.04
-          CI: 1
-        run: make
-  ubuntu-16-04:
-    name: ubuntu-16-04
-    runs-on: ubuntu-latest
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install packages
+        run: |
+          echo 'man-db man-db/auto-update boolean false' | \
+              sudo debconf-set-selections
+          sudo rm -f /var/lib/man-db/auto-update
+          sudo apt-get update
+          sudo apt-get install ${MISSING_BUILD_PKGS}
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Test run
+        run: |
+          make test
+
+  job_1b:
+    name: Docs
+    runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - name: test
-        env:
-          DOCKER_IMAGE: ubuntu:16.04
-          CI: 1
-        run: make
-  debian-buster:
-    name: debian-buster
-    runs-on: ubuntu-latest
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install packages
+        run: |
+          echo 'man-db man-db/auto-update boolean false' | \
+              sudo debconf-set-selections
+          sudo rm -f /var/lib/man-db/auto-update
+          sudo apt-get update
+          # stupid debian shipped experimental and total broken ksh2020 as ksh
+          # package and the stable one as ksh93 in focal.
+          sudo apt-get install ksh93 || sudo apt-get install ksh
+          sudo apt-get install ${MISSING_BUILD_PKGS} ${MISSING_DOC_PKGS}
+      - name: Build
+        run: |
+          ${GHAH} -c showEnv
+          make docs
+      - name: Upload docs archive
+        uses: actions/upload-pages-artifact@v2
+        with:
+          name: github-pages
+          path: 'docs/html'
+
+  job_2b:
+    name: Github pages
+    runs-on: ubuntu-20.04
+    needs: job_1b
+    # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v2
-      - name: test
-        env:
-          DOCKER_IMAGE: debian:buster
-          CI: 1
-        run: make
-  debian-stretch:
-    name: debian-stretch
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: test
-        env:
-          DOCKER_IMAGE: debian:stretch
-          CI: 1
-        run: make
-  debian-jessie:
-    name: debian-jessie
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: test
-        env:
-          DOCKER_IMAGE: debian:jessie
-          CI: 1
-        run: make
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
