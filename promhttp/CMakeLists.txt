@@ -83,5 +83,5 @@ set(CPACK_DEBIAN_PACKAGE_DEPENDS "libmicrohttpd-dev")
 
 include(CPack)
 include(GNUInstallDirs)
-install(TARGETS promhttp LIBRARY DESTINATION lib)
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(TARGETS promhttp LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libprom)

@@ -25,6 +25,28 @@ Improvements wrt. to the forked source:
   them back
 - Solaris/Smartos/OmniOS/Illumos support
 
+Build, Install, Test
+--------------------
+Requirements: A recent cmake, gcc and libmicrohttpd version incl. development
+aka header files. Other compilers than gcc may work, too (but have not been
+tested yet).
+
+To build libprom and libpromhttp just run `make`. To build the API docs, 
+run `make docs`. To install the libs, etc. change the working directory
+to __target__/build/ and run `make install` (e.g.
+`cd prom/build && DESTDIR=/tmp/libprom make install`).
+
+To test the libs, run `make test`. 
+
+If you do not want to compile libprom by yourself, any successful CI job on the [Github Action Page](https://github.com/jelmd/libprom/actions) contains the libprom archive for x86_64 Ubuntu, where the CI tests have been run. Just click on a CI job and scroll down to the **Artifacts** section. On Linux they probably work on most more or less recent distributions.
+
+API, Documentation, Usage
+-------------------------
+- https://jelmd.github.io/libprom/
+- [example directory](https://github.com/jelmd/libprom/tree/main/example) of libprom
+- To compile your own libprom enhanced app, just add `#include <libprom/prom.h>`
+  and optionally `#include <libprom/promhttp.h>` to the related source and link
+  it with `-lprom` and optionally with `-lpromhttp`.
 
 Branch info
 -----------

@@ -140,5 +140,5 @@ set(CPACK_PACKAGE_HOMEPAGE_URL https://github.com/jelmd/libprom)
 
 include(CPack)
 include(GNUInstallDirs)
-install(TARGETS prom LIBRARY DESTINATION lib)
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(TARGETS prom LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libprom)
