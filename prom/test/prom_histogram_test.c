@@ -34,27 +34,27 @@ test_prom_histogram(void) {
 	const char *bucket_key = bucket->key[0];
 	const char *l_value = prom_map_get(h_sample->l_values, bucket_key);
 	pms_t *sample = (pms_t *) prom_map_get(h_sample->samples, l_value);
-	TEST_ASSERT_EQUAL_STRING("test_histogram{le=\"5.0\"}", sample->l_value);
+	TEST_ASSERT_EQUAL_STRING("test_histogram_bucket{le=\"5.0\"}", sample->l_value);
 	TEST_ASSERT_EQUAL_DOUBLE(1.0, sample->r_value);
 	bucket_key = NULL;
 
 	bucket_key = bucket->key[1];
 	l_value = prom_map_get(h_sample->l_values, bucket_key);
 	sample = (pms_t *) prom_map_get(h_sample->samples, l_value);
-	TEST_ASSERT_EQUAL_STRING("test_histogram{le=\"10.0\"}", sample->l_value);
+	TEST_ASSERT_EQUAL_STRING("test_histogram_bucket{le=\"10.0\"}", sample->l_value);
 	TEST_ASSERT_EQUAL_DOUBLE(2.0, sample->r_value);
 	bucket_key = NULL;
 
 	bucket_key = bucket->key[2];
 	l_value = prom_map_get(h_sample->l_values, bucket_key);
 	sample = (pms_t *) prom_map_get(h_sample->samples, l_value);
-	TEST_ASSERT_EQUAL_STRING("test_histogram{le=\"15.0\"}", sample->l_value);
+	TEST_ASSERT_EQUAL_STRING("test_histogram_bucket{le=\"15.0\"}", sample->l_value);
 	TEST_ASSERT_EQUAL_DOUBLE(3.0, sample->r_value);
 	bucket_key = NULL;
 
 	l_value = prom_map_get(h_sample->l_values, "+Inf");
 	sample = (pms_t *) prom_map_get(h_sample->samples, l_value);
-	TEST_ASSERT_EQUAL_STRING("test_histogram{le=\"+Inf\"}", sample->l_value);
+	TEST_ASSERT_EQUAL_STRING("test_histogram_bucket{le=\"+Inf\"}", sample->l_value);
 	TEST_ASSERT_EQUAL_DOUBLE(4.0, sample->r_value);
 
 	// Test total count. Should equal value ini +Inf

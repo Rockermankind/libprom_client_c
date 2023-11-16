@@ -94,9 +94,10 @@ test_pcr_bridge(void) {
 		"# TYPE test_gauge gauge",
 		"test_gauge{label=\"foo\"}",
 		"# HELP test_histogram histogram under test",
-		"# TYPE test_histogram histogram\ntest_histogram{le=\"5.0\"}",
-		"test_histogram{le=\"10.0\"}",
-		"test_histogram{le=\"+Inf\"}",
+		"# TYPE test_histogram histogram",
+		"test_histogram_bucket{le=\"5.0\"}",
+		"test_histogram_bucket{le=\"10.0\"}",
+		"test_histogram_bucket{le=\"+Inf\"}",
 		"test_histogram_count",
 		"test_histogram_sum",
 		"# HELP process_max_fds Max. number of open file descriptors "
@@ -106,7 +107,7 @@ test_pcr_bridge(void) {
 	};
 
 	fprintf(stderr, "%s\n", result);
-	for (int i = 0; i < 15; i++) {
+	for (int i = 0; i < 16; i++) {
 		TEST_ASSERT_NOT_NULL_MESSAGE(strstr(result, expected[i]), expected[i]);
 	}
 
