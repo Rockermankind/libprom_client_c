@@ -160,4 +160,15 @@ void *prom_collector_data_get(prom_collector_t *self);
  */
 prom_map_t *prom_collector_metrics_get(prom_collector_t *self);
 
+
+/**
+ * @brief Delete a map node from collector, which is added before.
+ * 
+ * @param self The collector to be deleted.
+ * @param key  The key to find the map node.
+ * @return A non-zero integer value upon failure, \c 0 otherwise. 
+ * @note You should use metric destroy function, then use this function to delete the map node.
+ */
+int prom_collector_del_metric(prom_collector_t *self,char* key);
+
 #endif  // PROM_COLLECTOR_H

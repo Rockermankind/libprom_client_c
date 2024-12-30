@@ -34,6 +34,17 @@ prom_collector_metrics_get(prom_collector_t *self) {
 	return self->metrics;
 }
 
+int
+prom_collector_del_metric(prom_collector_t *self,char* key) {
+	if(self == NULL) return 1;	
+	if (prom_map_get(self->metrics, key) == NULL) {
+		PROM_LOG("metric already found in collector");
+		return 1;
+	}
+	prom_map_delete(self->metrics,key);
+    return 0;
+}
+
 prom_collector_t *
 prom_collector_new(const char *name) {
 	prom_collector_t *self = (prom_collector_t *)

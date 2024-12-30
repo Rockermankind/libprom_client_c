@@ -1,6 +1,6 @@
 CMAKE_EXTRA_OPTS ?= -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_BUILD_RPATH=TRUE
 MAKE_FLAGS ?= VERBOSE=1
-CFLAGS ?= -DPROM_LOG_ENABLE -g -O3
+CFLAGS ?= -DPROM_LOG_ENABLE -g -O3 -DCMAKE_INSTALL_PREFIX=$(HOME)/libprom
 
 LIB_PATH_SFX := $(shell [ `uname -s` = 'SunOS' ] && echo  '_64' )
 LIB_PATH := .:$$PWD/prom/build:$$PWD/promhttp/build:/opt/local/lib
