@@ -72,6 +72,31 @@ phb_new(size_t count, double bucket, ...) {
 	return self;
 }
 
+phb_t*
+phb_new_with_size(size_t count,double bucket_value[]) {
+	phb_t *self = (phb_t *) prom_malloc(sizeof(phb_t));
+	if (self == NULL)
+		return NULL;
+
+	self->count = count;
+	self->upper_bound = NULL;
+	self->key = NULL;
+	double *upper_bounds = (double *) prom_malloc(sizeof(double) * count);
+	const char **keys = (const char **) prom_malloc(sizeof(char *) * count);
+	if (upper_bounds == NULL || keys == NULL) {
+		phb_destroy(self);
+		return NULL;
+	}
+	for(int i = 0;i < count;i ++) {
+		upper_bounds[i] = bucket_value[i];
+		keys[i] = double_to_str(upper_bounds[i]);
+	}
+	self->upper_bound = upper_bounds;
+	self->key = keys;
+	return self;
+}
+
+
 phb_t *
 phb_linear(double start, double width, size_t count) {
 	if (count <= 1) {

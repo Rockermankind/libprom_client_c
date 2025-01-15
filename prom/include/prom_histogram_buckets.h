@@ -47,6 +47,17 @@ phb_t *phb_new(size_t count, double bucket, ...);
 extern phb_t *prom_histogram_default_buckets;
 
 /**
+ * @brief Coustruct a new histogram bucket with the given array.
+ * 
+ * @param count Number of buckets.
+ * @param bucket_value \c count array to add to the bucket.
+ * @return phb_t* The new histogram bucket, or \c NULL if an error occured.
+ */
+phb_t*
+phb_new_with_size(size_t count,double bucket_value[]);
+
+
+/**
  * @brief Construct a linearly sized prom histogram bucket.
  * @param start The first inclusive upper bound.
  * @param width The distance between each upper bound.
