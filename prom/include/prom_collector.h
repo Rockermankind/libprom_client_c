@@ -171,4 +171,15 @@ prom_map_t *prom_collector_metrics_get(prom_collector_t *self);
  */
 int prom_collector_del_metric(prom_collector_t *self,char* key);
 
+
+
+/**
+ * @brief find the metric in the collector
+ *  
+ * @param self the collector 
+ * @param key the metric that want to find
+ * @return A non-zero integer value upon failure, \c 0 otherwise.
+ */
+int prom_collector_find_metric(prom_collector_t* self,char* key);
+
 #endif  // PROM_COLLECTOR_H

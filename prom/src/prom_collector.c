@@ -148,3 +148,8 @@ prom_collector_data_get(prom_collector_t *self) {
 		return NULL;
 	return self->data;
 }
+
+int prom_collector_find_metric(prom_collector_t* self,char* key) {
+	if(self == NULL) return 0;
+	return prom_map_get(prom_collector_metrics_get(self),key) == NULL ? 0 : 1;
+}
