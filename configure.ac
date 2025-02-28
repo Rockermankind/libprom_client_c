@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([libprom libpromhttp], [1.0.0], [rochermankind@163.com])
+AC_INIT([libprom libpromhttp], [1.0.0], [local@outlook.com])
 #AC_INIT([libpromhttp],[1.0],[rochermankind@163.com])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CONFIG_SRCDIR([prom/include/prom_collector_registry.h])
