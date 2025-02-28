@@ -83,7 +83,7 @@ prom_map_node_compare(void *item_a, void *item_b) {
 	if (b == NULL)
 		return 1;
 
-	if (a->key == b->key)
+	if (strcmp(a->key,b->key) == 0)
 		return 0;
 	if (a->key == NULL)
 		return -1;
@@ -409,9 +409,9 @@ prom_map_delete_internal(const char *key, size_t *size, size_t *max_size,
 		if (result != PROM_EQUAL)
 			continue;
 
-		if (pll_remove(list, current_node))
+		if (pll_remove(keys, (void*)temp_map_node->key))
 			return 1;
-		if (pll_remove(keys, (char *)current_map_node->key))
+		if (pll_remove(list, current_map_node))
 			return 2;
 		(*size)--;
 		break;

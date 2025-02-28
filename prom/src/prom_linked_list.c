@@ -156,7 +156,7 @@ pll_remove(pll_t *self, void *item) {
 		if (self->compare_fn) {
 			if ((*self->compare_fn)(node->item, item) == PROM_EQUAL)
 				break;
-		} else if (node->item == item) {
+		} else if (strcmp((char*)node->item,(char*)item) == 0) {
 			break;
 		}
 		prev_node = node;
